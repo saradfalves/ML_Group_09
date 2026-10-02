@@ -1,0 +1,20 @@
+name: machine_learning
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13.5
+  - pip=25.1
+  - pip:
+      - category-encoders==2.8.1
+      - ipykernel==6.30.1
+      - joblib==1.5.3
+      - jupyter==1.1.1
+      - matplotlib==3.11.0
+      - notebook==7.4.5
+      - numpy==2.4.6
+      - openpyxl==3.1.5
+      - pandas==3.0.3
+      - pytest==9.1.1
+      - scikit-learn==1.9.0
+      - scipy==1.18.0
+      - seaborn==0.13.2
