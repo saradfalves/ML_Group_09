@@ -1,0 +1,162 @@
+{
+  "dataset": "train",
+  "steps": [
+    {
+      "column": "all feature columns",
+      "action": "drop rows empty in every feature",
+      "reason": "65 rows have no value in any numeric or categorical column, so there is nothing to compute or learn from",
+      "rows_affected": 65,
+      "carries": {
+        "applied": true
+      }
+    },
+    {
+      "column": "prior_mean_purchase_value",
+      "action": "recomputed as prior_total_spend / prior_purchase_count",
+      "reason": "the stored mean was missing or negative for customers with a history, and the total and the count are on the same row",
+      "rows_affected": 1244,
+      "carries": {
+        "applied": true
+      }
+    },
+    {
+      "column": "prior_mean_gap_days, days_since_previous_purchase",
+      "action": "computed from customer_tenure_days and the purchase count",
+      "reason": "(tenure - days since previous) / (count - 1) reproduces the stored mean gap wherever both exist",
+      "rows_affected": 356,
+      "carries": {
+        "applied": true
+      }
+    },
+    {
+      "column": "spend_365d",
+      "action": "inconsistent values blanked; filled from prior_total_spend or 0 where the window holds all of the history or none of it",
+      "reason": "a 365-day spend cannot be below the 180-day spend or above the total spend",
+      "rows_affected": 143,
+      "carries": {
+        "applied": true
+      }
+    },
+    {
+      "column": "prior_std_gap_days, prior_std_purchase_value",
+      "action": "0 for one gap or one purchase",
+      "reason": "a single value has no spread; a convention, with indicator columns recording which rows had history",
+      "rows_affected": 810,
+      "carries": {
+        "applied": true
+      }
+    },
+    {
+      "column": "days_since_previous_purchase, prior_mean_gap_days, spend_365d",
+      "action": "invalid values -> NaN ('blank the cell')",
+      "reason": "a day count or a window spend cannot be negative; the -4 in the two day columns is a placeholder code; clipping, flagging and dropping were within noise of blanking (clip +0.0000 +/- 0.0000)",
+      "rows_affected": 32,
+      "carries": {
+        "treatment": "blank",
+        "becomes": null,
+        "columns": [
+          "days_since_previous_purchase",
+          "prior_mean_gap_days",
+          "spend_365d"
+        ]
+      }
+    },
+    {
+      "column": "customer_id",
+      "action": "keep every row",
+      "reason": "keeping every row scored +0.1102 +/- 0.0215 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the win rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
+      "rows_affected": 0,
+      "carries": {
+        "key": "customer_id",
+        "keep": "keep every row"
+      }
+    },
+    {
+      "column": "29 numeric and 6 categorical columns",
+      "action": "missing values LEFT OPEN; the 'zero / mode' plan goes to later weeks",
+      "reason": "a median or a mode computed here would be computed over the rows each later week holds out to score on; the plan is applied inside each split",
+      "rows_affected": 6123,
+      "carries": {
+        "applied": false,
+        "plan": "zero / mode",
+        "numeric": [
+          "Total a Pagar",
+          "Total Bruto",
+          "Total Liquido",
+          "Total Imp_",
+          "Total Portes",
+          "Total Desc_ Global",
+          "Total Desc_ Linha",
+          "Custo",
+          "N_ Detalhes",
+          "invoice_count_current_purchase",
+          "days_since_previous_purchase",
+          "customer_tenure_days",
+          "prior_purchase_count",
+          "prior_total_spend",
+          "prior_mean_purchase_value",
+          "prior_std_purchase_value",
+          "prior_min_purchase_value",
+          "prior_max_purchase_value",
+          "prior_mean_gap_days",
+          "prior_std_gap_days",
+          "purchase_count_30d",
+          "spend_30d",
+          "purchase_count_90d",
+          "spend_90d",
+          "purchase_count_180d",
+          "spend_180d",
+          "purchase_count_365d",
+          "spend_365d",
+          "random_noise"
+        ],
+        "categorical": [
+          "payment_type",
+          "salesperson",
+          "commercial_zone",
+          "transport_method",
+          "warehouse",
+          "document_series"
+        ]
+      }
+    },
+    {
+      "column": "numeric columns",
+      "action": "outlier treatment: winsorize 1/99",
+      "reason": "five treatments compared on 20 paired splits of identical held-out customers; winsorize 1/99 scored F1 0.7075, +0.0051 +/- 0.0016 against keeping everything",
+      "rows_affected": 0,
+      "carries": {
+        "applied": false,
+        "treatment": "winsorize 1/99",
+        "columns": [
+          "Total a Pagar",
+          "Total Bruto",
+          "Total Liquido",
+          "Total Imp_",
+          "Total Portes",
+          "Total Desc_ Global",
+          "Total Desc_ Linha",
+          "Custo",
+          "N_ Detalhes",
+          "days_since_previous_purchase",
+          "prior_purchase_count",
+          "prior_total_spend",
+          "prior_mean_purchase_value",
+          "prior_std_purchase_value",
+          "prior_min_purchase_value",
+          "prior_max_purchase_value",
+          "prior_mean_gap_days",
+          "prior_std_gap_days",
+          "purchase_count_30d",
+          "spend_30d",
+          "purchase_count_90d",
+          "spend_90d",
+          "purchase_count_180d",
+          "spend_180d",
+          "purchase_count_365d",
+          "spend_365d"
+        ]
+      }
+    }
+  ]
+}
