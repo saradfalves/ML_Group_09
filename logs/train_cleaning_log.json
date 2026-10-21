@@ -2,6 +2,17 @@
   "dataset": "train",
   "steps": [
     {
+      "column": "purchase_date",
+      "action": "converted from text to datetime ('%Y-%m-%d')",
+      "reason": "the dates arrive as 'yyyy-mm-dd' strings, which cannot be sorted by time or subtracted; as datetime values they give the order and the intervals the dictionary says are preserved, and the column stays out of the one-hot encoder",
+      "rows_affected": 6469,
+      "carries": {
+        "applied": true,
+        "dtype": "datetime64",
+        "format": "%Y-%m-%d"
+      }
+    },
+    {
       "column": "all feature columns",
       "action": "drop rows empty in every feature",
       "reason": "65 rows have no value in any numeric or categorical column, so there is nothing to compute or learn from",
