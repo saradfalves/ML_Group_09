@@ -20,10 +20,10 @@
       }
     },
     {
-      "column": "prior_mean_gap_days, days_since_previous_purchase",
+      "column": "prior_mean_gap_days",
       "action": "computed from customer_tenure_days and the purchase count",
       "reason": "(tenure - days since previous) / (count - 1) reproduces the stored mean gap wherever both exist",
-      "rows_affected": 356,
+      "rows_affected": 205,
       "carries": {
         "applied": true
       }
@@ -47,16 +47,15 @@
       }
     },
     {
-      "column": "days_since_previous_purchase, prior_mean_gap_days, spend_365d",
+      "column": "days_since_previous_purchase, spend_365d",
       "action": "invalid values -> NaN ('blank the cell')",
       "reason": "a day count or a window spend cannot be negative; the -4 in the two day columns is a placeholder code; clipping, flagging and dropping were within noise of blanking (clip +0.0000 +/- 0.0000)",
-      "rows_affected": 32,
+      "rows_affected": 16,
       "carries": {
         "treatment": "blank",
         "becomes": null,
         "columns": [
           "days_since_previous_purchase",
-          "prior_mean_gap_days",
           "spend_365d"
         ]
       }
@@ -64,7 +63,7 @@
     {
       "column": "customer_id",
       "action": "keep every row",
-      "reason": "keeping every row scored +0.1102 +/- 0.0215 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the win rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
+      "reason": "keeping every row scored +0.1117 +/- 0.0222 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the win rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
       "rows_affected": 0,
       "carries": {
         "key": "customer_id",
@@ -75,7 +74,7 @@
       "column": "29 numeric and 6 categorical columns",
       "action": "missing values LEFT OPEN; the 'zero / mode' plan goes to later weeks",
       "reason": "a median or a mode computed here would be computed over the rows each later week holds out to score on; the plan is applied inside each split",
-      "rows_affected": 6123,
+      "rows_affected": 6276,
       "carries": {
         "applied": false,
         "plan": "zero / mode",
@@ -123,7 +122,7 @@
     {
       "column": "numeric columns",
       "action": "outlier treatment: winsorize 1/99",
-      "reason": "five treatments compared on 20 paired splits of identical held-out customers; winsorize 1/99 scored F1 0.7075, +0.0051 +/- 0.0016 against keeping everything",
+      "reason": "five treatments compared on 20 paired splits of identical held-out customers; winsorize 1/99 scored F1 0.7062, +0.0038 +/- 0.0015 against keeping everything",
       "rows_affected": 0,
       "carries": {
         "applied": false,
