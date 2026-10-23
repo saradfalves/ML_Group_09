@@ -82,13 +82,16 @@
       }
     },
     {
-      "column": "29 numeric and 6 categorical columns",
+      "column": "feature columns",
       "action": "missing values LEFT OPEN; the 'KNN (k=5) / mode' plan goes to later weeks",
-      "reason": "a median or a mode computed here would be computed over the rows each later week holds out to score on; the plan is applied inside each split",
+      "reason": "a fill computed here would be computed over the rows each later week holds out to score on, so the file would carry a value derived from its own test set; the plan won the comparison and each week applies it inside its own split",
       "rows_affected": 6276,
       "carries": {
         "applied": false,
-        "plan": "KNN (k=5) / mode",
+        "fill": {
+          "numeric": "KNN (k=5)",
+          "categorical": "mode"
+        },
         "numeric": [
           "Total a Pagar",
           "Total Bruto",
@@ -131,13 +134,13 @@
       }
     },
     {
-      "column": "numeric columns",
+      "column": "log1p columns",
       "action": "outlier treatment: log1p",
-      "reason": "five treatments compared with standard scaling on 20 paired splits of identical held-out customers; log1p scored F1 0.7047, +0.0104 +/- 0.0021 against keeping everything",
-      "rows_affected": 0,
+      "reason": "five outlier treatments were compared on 20 paired splits of identical held-out customers; log1p scored F1 0.7047, +0.0104 +/- 0.0021 against keeping every row; log1p fits nothing, so each later week applies it inside its own split",
+      "rows_affected": 26,
       "carries": {
         "applied": false,
-        "treatment": "log1p",
+        "transform": "log1p",
         "columns": [
           "Total a Pagar",
           "Total Bruto",
@@ -165,7 +168,9 @@
           "spend_180d",
           "purchase_count_365d",
           "spend_365d"
-        ]
+        ],
+        "outliers": "keep",
+        "rule_tested": "log1p against IQR, z-score and winsorizing"
       }
     }
   ]
