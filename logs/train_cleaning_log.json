@@ -60,7 +60,7 @@
     {
       "column": "days_since_previous_purchase, spend_365d",
       "action": "invalid values -> NaN ('blank the cell')",
-      "reason": "a day count or a window spend cannot be negative; the -4 in the two day columns is a placeholder code; the clipping comparison against blanking was -0.0008 +/- 0.0008",
+      "reason": "a day count or a window spend cannot be negative; the -4 in the two day columns is a placeholder code; the clipping comparison against blanking was -0.0026 +/- 0.0006",
       "rows_affected": 16,
       "carries": {
         "treatment": "blank",
@@ -74,7 +74,7 @@
     {
       "column": "customer_id",
       "action": "keep every row",
-      "reason": "keeping every row scored +0.0981 +/- 0.0191 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the repeat rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
+      "reason": "keeping every row scored +0.1086 +/- 0.0201 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the repeat rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
       "rows_affected": 0,
       "carries": {
         "key": "customer_id",
