@@ -41,9 +41,9 @@
     },
     {
       "column": "spend_365d",
-      "action": "inconsistent values blanked; filled from prior_total_spend or 0 where the window holds all of the history or none of it",
+      "action": "inconsistent values filled from prior_total_spend or 0 where the window holds all of the history or none of it",
       "reason": "a 365-day spend cannot be below the 180-day spend or above the total spend",
-      "rows_affected": 143,
+      "rows_affected": 82,
       "carries": {
         "applied": true
       }
@@ -60,21 +60,25 @@
     {
       "column": "days_since_previous_purchase, spend_365d",
       "action": "invalid values -> NaN ('blank the cell')",
-      "reason": "a day count or a window spend cannot be negative; the -4 in the two day columns is a placeholder code; the clipping comparison against blanking was -0.0026 +/- 0.0006",
-      "rows_affected": 16,
+      "reason": "a day count cannot be negative, and a 365-day spend cannot be negative or larger than the customer's total spend; the -4 in the day column and the 1,000,000,000 in spend_365d are placeholder codes, not real values; 63 of 6,469 rows carry an impossible value; against blanking, clipping to zero scored -0.0005 +/- 0.0010, dropping the rows -0.0024 +/- 0.0010 and keeping them with a flag -0.0191 +/- 0.0038",
+      "rows_affected": 63,
       "carries": {
         "treatment": "blank",
         "becomes": null,
         "columns": [
           "days_since_previous_purchase",
           "spend_365d"
-        ]
+        ],
+        "rules": {
+          "days_since_previous_purchase": "< 0",
+          "spend_365d": "< 0 or > prior_total_spend + 0.01"
+        }
       }
     },
     {
       "column": "customer_id",
       "action": "keep every row",
-      "reason": "keeping every row scored +0.1086 +/- 0.0201 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the repeat rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
+      "reason": "keeping every row scored +0.1035 +/- 0.0186 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the repeat rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
       "rows_affected": 0,
       "carries": {
         "key": "customer_id",
@@ -83,9 +87,9 @@
     },
     {
       "column": "feature columns",
-      "action": "missing values LEFT OPEN; the 'KNN (k=5) / mode' plan goes to nb3 onwards",
+      "action": "missing values LEFT OPEN; the 'zero / mode' plan goes to nb3 onwards",
       "reason": "a fill computed here would be computed over the rows each later notebook holds out to score on, so the file would carry a value derived from its own test set; the plan won the comparison and each notebook applies it inside its own split",
-      "rows_affected": 6276,
+      "rows_affected": 6290,
       "carries": {
         "applied": false,
         "fill": {
@@ -136,7 +140,7 @@
     {
       "column": "log1p columns",
       "action": "outlier treatment: log1p",
-      "reason": "five outlier treatments were compared on 20 paired splits of identical held-out customers; log1p scored F1 0.7047, +0.0104 +/- 0.0021 against keeping every row; log1p fits nothing, so each later notebook applies it inside its own split",
+      "reason": "five outlier treatments were compared on 20 paired splits of identical held-out customers; log1p scored F1 0.7024, +0.0083 +/- 0.0018 against keeping every row; log1p fits nothing, so each later notebook applies it inside its own split",
       "rows_affected": 26,
       "carries": {
         "applied": false,
