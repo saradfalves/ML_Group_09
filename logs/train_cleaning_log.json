@@ -60,7 +60,7 @@
     {
       "column": "days_since_previous_purchase, spend_365d",
       "action": "invalid values -> NaN ('blank the cell')",
-      "reason": "a day count cannot be negative, and a 365-day spend cannot be negative or larger than the customer's total spend; the -4 in the day column and the 1,000,000,000 in spend_365d are placeholder codes, not real values; 63 of 6,469 rows carry an impossible value; against blanking, clipping to zero scored +0.0005 +/- 0.0009, dropping the rows -0.0014 +/- 0.0009 and keeping them with a flag -0.0251 +/- 0.0046",
+      "reason": "a day count cannot be negative, and a 365-day spend cannot be negative or larger than the customer's total spend; the -4 in the day column and the 1,000,000,000 in spend_365d are placeholder codes, not real values; 63 of 6,469 rows carry an impossible value; against blanking, clipping to zero scored -0.0005 +/- 0.0010, dropping the rows -0.0024 +/- 0.0010 and keeping them with a flag -0.0191 +/- 0.0038",
       "rows_affected": 63,
       "carries": {
         "treatment": "blank",
@@ -78,7 +78,7 @@
     {
       "column": "customer_id",
       "action": "keep every row",
-      "reason": "keeping every row scored +0.1038 +/- 0.0190 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the repeat rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
+      "reason": "keeping every row scored +0.1035 +/- 0.0186 against the earliest-ID rule; one row per customer keeps 607 of 6,469 rows and moves the repeat rate from 0.5597 to 0.2636; customers are kept apart by splitting on customer_id",
       "rows_affected": 0,
       "carries": {
         "key": "customer_id",
