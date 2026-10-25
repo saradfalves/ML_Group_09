@@ -93,7 +93,7 @@
       "carries": {
         "applied": false,
         "fill": {
-          "numeric": "KNN (k=5)",
+          "numeric": "zero",
           "categorical": "mode"
         },
         "numeric": [
